@@ -86,7 +86,7 @@ hotelsRouter.put('/:id', async (request, response, next) => {
         const savedHotel = await Hotel.findByIdAndUpdate(
             request.params.id,
             hotelData,
-            {new: true}
+            { new: true }
         )
         response.status(201).json(savedHotel)
     } catch (error) {
@@ -95,10 +95,42 @@ hotelsRouter.put('/:id', async (request, response, next) => {
     }
 })
 
-hotelsRouter.delete('/:id', async(request,response,next) => {
+hotelsRouter.delete('/:id', async (request, response, next) => {
     try {
-        await  Hotel.findByIdAndDelete(request.params.id)
+        await Hotel.findByIdAndDelete(request.params.id)
         response.sendStatus(204)
+    } catch (error) {
+        next(error)
+    }
+})
+
+hotelsRouter.get('/CountByCity', async (request, response, next) => {
+    const cities = request.query.cities.split(',')
+
+    const citiesPromises = cities.map(city => Hotel.countDocuments({ city: city }))
+    try {
+        const citiesData = await Promise.all(citiesPromises)
+        response.json(citiesData)
+    } catch (error) {
+        next(error)
+    }
+})
+
+hotelsRouter.get('/CountByType', async (request, response, next) => {
+    try {
+        const hotelCount = await Hotel.countDocuments({ type: 'hotel' })
+        const appartmentCount = await Hotel.countDocuments({ type: 'appartment' })
+        const cabinCount = await Hotel.countDocuments({ type: 'cabin' })
+        const resortCount = await Hotel.countDocuments({ type: 'resort' })
+        const villaCount = await Hotel.countDocuments({ type: 'villa' })
+
+        response.json([
+            { type: 'hotels', count: hotelCount },
+            { type: 'appartments', count: appartmentCount },
+            { type: 'cabins', count: cabinCount },
+            { type: 'resorts', count: resortCount },
+            { type: 'villas', count: villaCount },
+        ])
     } catch (error) {
         next(error)
     }
