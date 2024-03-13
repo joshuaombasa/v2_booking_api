@@ -10,6 +10,18 @@ roomsRouter.get('/', async(request, response, next) => {
     }
 })
 
+roomsRouter.get('/:id', async(request, response, next) => {
+    try {
+        const room = await Room.findById(request.params.id)
+        if (!room) {
+            response.sendStatus(404)
+        }
+        response.json(room)
+    } catch (error) {
+        
+    }
+})
+
 // roomsRouter.get('/', async(request, response, next) => {
 //     try {
 //         const rooms = await Room.find({})
