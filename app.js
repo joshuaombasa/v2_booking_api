@@ -6,6 +6,7 @@ const logger = require('./utils/logger')
 
 const hotelsRouter = require('./controllers/hotels')
 const roomsRouter = require('./controllers/rooms')
+const usersRouter = require('./controllers/users')
 
 const app = express()
 const connect = require('./utils/db')
@@ -18,6 +19,7 @@ app.use(middleware.requestLogger)
 
 app.use('/api/hotels',hotelsRouter)
 app.use('/api/rooms',roomsRouter)
+app.use('/api/users',usersRouter)
 
 app.use(middleware.unknownEndpointsHandler)
 app.use(middleware.errorHandler)
